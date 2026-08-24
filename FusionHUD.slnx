@@ -1,0 +1,23 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="ARM64" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Project Path="FusionHUD.Monitoring/FusionHUD.Monitoring.csproj">
+    <Platform Solution="*|ARM64" Project="ARM64" />
+  </Project>
+  <Project Path="FusionHUD.Overlay/FusionHUD.Overlay.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+    <Platform Solution="Debug|Any CPU" Project="x64" />
+    <Platform Solution="Debug|ARM64" Project="x64" />
+  </Project>
+  <Project Path="FusionHUD.Performance/FusionHUD.Performance.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="FusionHUD/FusionHUD.App.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+    <Platform Solution="Debug|Any CPU" Project="x64" />
+    <Platform Solution="Debug|ARM64" Project="x64" />
+  </Project>
+</Solution>
