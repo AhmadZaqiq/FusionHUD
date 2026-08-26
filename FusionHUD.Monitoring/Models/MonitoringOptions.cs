@@ -2,8 +2,9 @@
 {
     public sealed class MonitoringOptions
     {
-        public int SampleIntervalSeconds { get; set; } = 30;
+        public int SampleIntervalSeconds { get; set; } = 5;
 
         public string ReportTime { get; set; } = "00:00";
     }
+
 }

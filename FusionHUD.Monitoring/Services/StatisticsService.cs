@@ -100,23 +100,18 @@ namespace FusionHUD.Monitoring.Services
             Statistics.Uptime = State.Statistics.Uptime;
 
             Statistics.CpuUsageAverage = State.Statistics.CpuUsageAverage;
-
             Statistics.CpuUsageMaximum = State.Statistics.CpuUsageMaximum;
 
             Statistics.CpuTemperatureAverage = State.Statistics.CpuTemperatureAverage;
-
             Statistics.CpuTemperatureMaximum = State.Statistics.CpuTemperatureMaximum;
 
             Statistics.GpuUsageAverage = State.Statistics.GpuUsageAverage;
-
             Statistics.GpuUsageMaximum = State.Statistics.GpuUsageMaximum;
 
             Statistics.GpuTemperatureAverage = State.Statistics.GpuTemperatureAverage;
-
             Statistics.GpuTemperatureMaximum = State.Statistics.GpuTemperatureMaximum;
 
             Statistics.RamUsageAverage = State.Statistics.RamUsageAverage;
-
             Statistics.RamUsageMaximum = State.Statistics.RamUsageMaximum;
 
             Statistics.FpsAverage = State.Statistics.FpsAverage;
@@ -179,6 +174,11 @@ namespace FusionHUD.Monitoring.Services
 
         private void UpdateCpuTemperature(double Value)
         {
+            if (Value <= 0)
+            {
+                return;
+            }
+
             _CpuTemperatureTotal += Value;
 
             _CpuTemperatureSamples++;
@@ -207,6 +207,11 @@ namespace FusionHUD.Monitoring.Services
 
         private void UpdateGpuTemperature(double Value)
         {
+            if (Value <= 0)
+            {
+                return;
+            }
+
             _GpuTemperatureTotal += Value;
 
             _GpuTemperatureSamples++;
@@ -218,7 +223,7 @@ namespace FusionHUD.Monitoring.Services
                 Statistics.GpuTemperatureMaximum = Value;
             }
         }
-
+        
         private void UpdateRamUsage(double Value)
         {
             _RamUsageTotal += Value;

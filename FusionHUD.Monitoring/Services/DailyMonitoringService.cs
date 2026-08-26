@@ -40,11 +40,33 @@ namespace FusionHUD.Monitoring.Services
                 return;
             }
 
+            DateOnly CurrentDate = DateOnly.FromDateTime(DateTime.Now);
+
+            DateOnly StateDate = DateOnly.FromDateTime(State.Date);
+
+            if (StateDate != CurrentDate)
+            {
+                await _DailyStatisticsStore.DeleteAsync(CancellationToken);
+
+                _StatisticsService.Reset();
+
+                return;
+            }
+
             _StatisticsService.Restore(State);
         }
 
         public async Task ProcessSampleAsync(CancellationToken CancellationToken = default)
         {
+            DateOnly CurrentDate = DateOnly.FromDateTime(DateTime.Now);
+
+            DateOnly StatisticsDate = DateOnly.FromDateTime(_StatisticsService.Statistics.StartTime);
+
+            if (StatisticsDate != CurrentDate)
+            {
+                _StatisticsService.Reset();
+            }
+
             PerformanceSample Sample = _PerformanceDataProvider.GetPerformanceSample();
 
             _StatisticsService.Update(Sample);

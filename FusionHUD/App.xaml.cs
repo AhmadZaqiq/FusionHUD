@@ -6,6 +6,7 @@ using FusionHUD.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Windows;
+using Microsoft.Extensions.Configuration;
 
 namespace FusionHUD
 {
@@ -17,11 +18,13 @@ namespace FusionHUD
         {
             HostApplicationBuilder Builder = Host.CreateApplicationBuilder();
 
+            Builder.Configuration.AddUserSecrets<App>();
+
             Builder.Services.AddPerformanceServices();
 
             Builder.Services.AddOverlayServices();
 
-            Builder.Services.AddMonitoringServices();
+            Builder.Services.AddMonitoringServices(Builder.Configuration);
 
             Builder.Services.AddSingleton<IStartupService, StartupService>();
 
@@ -31,7 +34,7 @@ namespace FusionHUD
 
             await _Host.StartAsync();
 
-            IOverlayLauncher OverlayLauncher = _Host.Services.GetRequiredService<IOverlayLauncher>();
+            IOverlayLauncher OverlayLauncher =_Host.Services.GetRequiredService<IOverlayLauncher>();
 
             OverlayLauncher.Start();
         }

@@ -8,6 +8,8 @@ namespace FusionHUD.Monitoring.Persistence
     {
         private readonly string _FilePath;
 
+        private readonly string _TemporaryFilePath;
+
         private readonly JsonSerializerOptions _JsonOptions =
             new()
             {
@@ -17,9 +19,12 @@ namespace FusionHUD.Monitoring.Persistence
         public DailyStatisticsStore(string FilePath)
         {
             _FilePath = FilePath;
+
+            _TemporaryFilePath = FilePath + ".tmp";
         }
 
-        public async Task<StatisticsState?> LoadAsync(CancellationToken CancellationToken = default)
+        public async Task<StatisticsState?> LoadAsync(
+            CancellationToken CancellationToken = default)
         {
             if (!File.Exists(_FilePath))
             {
@@ -28,7 +33,7 @@ namespace FusionHUD.Monitoring.Persistence
 
             try
             {
-                await using FileStream Stream = File.OpenRead(_FilePath);
+                await using FileStream Stream = new(_FilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
 
                 return await JsonSerializer.DeserializeAsync<StatisticsState>(Stream, _JsonOptions, CancellationToken);
             }
@@ -51,16 +56,26 @@ namespace FusionHUD.Monitoring.Persistence
                 Directory.CreateDirectory(DirectoryPath);
             }
 
-            string TemporaryFilePath = _FilePath + ".tmp";
-
-            await using (FileStream Stream = File.Create(TemporaryFilePath))
+            try
             {
-                await JsonSerializer.SerializeAsync(Stream, State, _JsonOptions, CancellationToken);
+                await using (FileStream Stream = File.Create(_TemporaryFilePath))
+                {
+                    await JsonSerializer.SerializeAsync(Stream, State, _JsonOptions, CancellationToken);
 
-                await Stream.FlushAsync(CancellationToken);
+                    await Stream.FlushAsync(CancellationToken);
+                }
+
+                File.Move(_TemporaryFilePath, _FilePath, true);
             }
+            catch
+            {
+                if (File.Exists(_TemporaryFilePath))
+                {
+                    File.Delete(_TemporaryFilePath);
+                }
 
-            File.Move(TemporaryFilePath, _FilePath, true);
+                throw;
+            }
         }
 
         public Task DeleteAsync(CancellationToken CancellationToken = default)
@@ -68,6 +83,11 @@ namespace FusionHUD.Monitoring.Persistence
             if (File.Exists(_FilePath))
             {
                 File.Delete(_FilePath);
+            }
+
+            if (File.Exists(_TemporaryFilePath))
+            {
+                File.Delete(_TemporaryFilePath);
             }
 
             return Task.CompletedTask;

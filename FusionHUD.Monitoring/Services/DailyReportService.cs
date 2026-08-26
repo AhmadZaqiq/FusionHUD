@@ -7,21 +7,21 @@ namespace FusionHUD.Monitoring.Services
     {
         public string CreateReport(DailyStatistics Statistics)
         {
-            string CpuTemperatureMaximum = Statistics.CpuTemperatureMaximum > 0 ? $"{Statistics.CpuTemperatureMaximum:F0}°C" : "N/A";
+            string CpuTemperatureMaximum =Statistics.CpuTemperatureMaximum > 0? $"{Statistics.CpuTemperatureMaximum:F0}°C": "N/A";
 
-            string CpuTemperatureAverage = Statistics.CpuTemperatureAverage > 0 ? $"{Statistics.CpuTemperatureAverage:F0}°C" : "N/A";
+            string CpuTemperatureAverage =Statistics.CpuTemperatureAverage > 0? $"{Statistics.CpuTemperatureAverage:F0}°C": "N/A";
 
-            string GpuTemperatureMaximum = Statistics.GpuTemperatureMaximum > 0 ? $"{Statistics.GpuTemperatureMaximum:F0}°C" : "N/A";
+            string GpuTemperatureMaximum =Statistics.GpuTemperatureMaximum > 0? $"{Statistics.GpuTemperatureMaximum:F0}°C": "N/A";
 
-            string GpuTemperatureAverage = Statistics.GpuTemperatureAverage > 0 ? $"{Statistics.GpuTemperatureAverage:F0}°C" : "N/A";
+            string GpuTemperatureAverage =Statistics.GpuTemperatureAverage > 0? $"{Statistics.GpuTemperatureAverage:F0}°C": "N/A";
 
-            string FpsAverage = Statistics.FpsAverage > 0 ? $"{Statistics.FpsAverage:F0}" : "N/A";
+            string FpsAverage =Statistics.FpsAverage > 0? $"{Statistics.FpsAverage:F0}": "N/A";
 
             string Report = $"""
                 📊 FusionHUD Daily Report
 
                 📅 Date: {Statistics.StartTime:dd/MM/yyyy}
-                ⏱ Uptime: {Statistics.Uptime:hh\:mm\:ss}
+                ⏱ Uptime: {FormatUptime(Statistics.Uptime)}
 
                 🖥 CPU
                 Average Usage: {Statistics.CpuUsageAverage:F0}%
@@ -44,6 +44,13 @@ namespace FusionHUD.Monitoring.Services
                 """;
 
             return Report;
+        }
+
+        private static string FormatUptime(TimeSpan Uptime)
+        {
+            int TotalHours = (int)Uptime.TotalHours;
+
+            return $"{TotalHours:00}:{Uptime.Minutes:00}:{Uptime.Seconds:00}";
         }
     }
 
