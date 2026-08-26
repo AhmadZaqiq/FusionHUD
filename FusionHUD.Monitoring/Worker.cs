@@ -1,7 +1,6 @@
 using FusionHUD.Monitoring.Interfaces;
 using FusionHUD.Monitoring.Models;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace FusionHUD.Monitoring
 {
@@ -9,15 +8,13 @@ namespace FusionHUD.Monitoring
     {
         private readonly IDailyMonitoringService _DailyMonitoringService;
         private readonly MonitoringOptions _MonitoringOptions;
-        private readonly ILogger<Worker> _Logger;
 
         private DateOnly _LastReportDate = DateOnly.MinValue;
 
-        public Worker(IDailyMonitoringService DailyMonitoringService, MonitoringOptions MonitoringOptions, ILogger<Worker> Logger)
+        public Worker(IDailyMonitoringService DailyMonitoringService, MonitoringOptions MonitoringOptions)
         {
             _DailyMonitoringService = DailyMonitoringService;
             _MonitoringOptions = MonitoringOptions;
-            _Logger = Logger;
         }
 
         protected override async Task ExecuteAsync(CancellationToken StoppingToken)
@@ -26,51 +23,23 @@ namespace FusionHUD.Monitoring
 
             using PeriodicTimer Timer = new(TimeSpan.FromSeconds(_MonitoringOptions.SampleIntervalSeconds));
 
-            _Logger.LogInformation("FusionHUD monitoring started. Sample interval: {Interval}s, Report time: {ReportTime}.", _MonitoringOptions.SampleIntervalSeconds, _MonitoringOptions.ReportTime);
-
-            try
+            while (!StoppingToken.IsCancellationRequested && await Timer.WaitForNextTickAsync(StoppingToken))
             {
-                while (await Timer.WaitForNextTickAsync(StoppingToken))
+                await _DailyMonitoringService.ProcessSampleAsync(StoppingToken);
+
+                if (StoppingToken.IsCancellationRequested)
                 {
-                    try
-                    {
-                        await _DailyMonitoringService.ProcessSampleAsync(StoppingToken);
-                    }
-                    catch (OperationCanceledException) when (StoppingToken.IsCancellationRequested)
-                    {
-                        break;
-                    }
-                    catch (Exception Exception)
-                    {
-                        _Logger.LogError(Exception, "Failed to process performance sample.");
-                    }
-
-                    DateTime CurrentTime = DateTime.Now;
-
-                    if (ShouldGenerateReport(CurrentTime))
-                    {
-                        try
-                        {
-                            await _DailyMonitoringService.ProcessDailyReportAsync(StoppingToken);
-
-                            _LastReportDate = DateOnly.FromDateTime(CurrentTime);
-
-                            _Logger.LogInformation("Daily report generated and sent successfully.");
-                        }
-                        catch (OperationCanceledException) when (StoppingToken.IsCancellationRequested)
-                        {
-                            break;
-                        }
-                        catch (Exception Exception)
-                        {
-                            _Logger.LogError(Exception, "Failed to generate or send daily report.");
-                        }
-                    }
+                    break;
                 }
-            }
-            catch (OperationCanceledException) when (StoppingToken.IsCancellationRequested)
-            {
-                _Logger.LogInformation("FusionHUD monitoring is stopping.");
+
+                DateTime CurrentTime = DateTime.Now;
+
+                if (ShouldGenerateReport(CurrentTime))
+                {
+                    await _DailyMonitoringService.ProcessDailyReportAsync(StoppingToken);
+
+                    _LastReportDate = DateOnly.FromDateTime(CurrentTime);
+                }
             }
         }
 
