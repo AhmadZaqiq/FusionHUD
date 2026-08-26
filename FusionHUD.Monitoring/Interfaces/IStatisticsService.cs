@@ -15,6 +15,8 @@ namespace FusionHUD.Monitoring.Interfaces
         void Restore(StatisticsState State);
 
         void Reset();
+
+        void SetReportSent(bool IsReportSent);
     }
 
 }

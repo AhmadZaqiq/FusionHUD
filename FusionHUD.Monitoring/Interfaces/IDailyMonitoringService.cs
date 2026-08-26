@@ -1,4 +1,7 @@
-﻿namespace FusionHUD.Monitoring.Interfaces
+﻿using System.Threading;
+using System.Threading.Tasks;
+
+namespace FusionHUD.Monitoring.Interfaces
 {
     public interface IDailyMonitoringService
     {

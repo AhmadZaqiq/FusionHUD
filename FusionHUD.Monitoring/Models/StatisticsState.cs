@@ -6,6 +6,8 @@
 
         public DailyStatistics Statistics { get; set; } = new();
 
+        public bool IsReportSent { get; set; }
+
         public double CpuUsageTotal { get; set; }
 
         public int CpuUsageSamples { get; set; }

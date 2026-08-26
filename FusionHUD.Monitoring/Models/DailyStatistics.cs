@@ -24,6 +24,8 @@
         public double RamUsageMaximum { get; set; }
 
         public double FpsAverage { get; set; }
+
+        public bool IsReportSent { get; set; }
     }
 
 }

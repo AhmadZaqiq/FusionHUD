@@ -7,13 +7,17 @@ namespace FusionHUD.Monitoring
     public sealed class Worker : BackgroundService
     {
         private readonly IDailyMonitoringService _DailyMonitoringService;
+
+        private readonly IReportScheduleService _ReportScheduleService;
+
         private readonly MonitoringOptions _MonitoringOptions;
 
-        private DateOnly _LastReportDate = DateOnly.MinValue;
-
-        public Worker(IDailyMonitoringService DailyMonitoringService, MonitoringOptions MonitoringOptions)
+        public Worker(IDailyMonitoringService DailyMonitoringService, IReportScheduleService ReportScheduleService, MonitoringOptions MonitoringOptions)
         {
             _DailyMonitoringService = DailyMonitoringService;
+
+            _ReportScheduleService = ReportScheduleService;
+
             _MonitoringOptions = MonitoringOptions;
         }
 
@@ -22,6 +26,8 @@ namespace FusionHUD.Monitoring
             await _DailyMonitoringService.InitializeAsync(StoppingToken);
 
             using PeriodicTimer Timer = new(TimeSpan.FromSeconds(_MonitoringOptions.SampleIntervalSeconds));
+
+            DateOnly LastProcessedReportDate = DateOnly.MinValue;
 
             while (!StoppingToken.IsCancellationRequested && await Timer.WaitForNextTickAsync(StoppingToken))
             {
@@ -34,30 +40,22 @@ namespace FusionHUD.Monitoring
 
                 DateTime CurrentTime = DateTime.Now;
 
-                if (ShouldGenerateReport(CurrentTime))
+                if (!_ReportScheduleService.IsReportDue(CurrentTime))
                 {
-                    await _DailyMonitoringService.ProcessDailyReportAsync(StoppingToken);
-
-                    _LastReportDate = DateOnly.FromDateTime(CurrentTime);
+                    continue;
                 }
+
+                DateOnly CurrentDate = DateOnly.FromDateTime(CurrentTime);
+
+                if (CurrentDate == LastProcessedReportDate)
+                {
+                    continue;
+                }
+
+                await _DailyMonitoringService.ProcessDailyReportAsync(StoppingToken);
+
+                LastProcessedReportDate = CurrentDate;
             }
-        }
-
-        private bool ShouldGenerateReport(DateTime CurrentTime)
-        {
-            if (!TimeSpan.TryParse(_MonitoringOptions.ReportTime, out TimeSpan ReportTime))
-            {
-                return false;
-            }
-
-            DateOnly CurrentDate = DateOnly.FromDateTime(CurrentTime);
-
-            if (CurrentDate == _LastReportDate)
-            {
-                return false;
-            }
-
-            return CurrentTime.TimeOfDay >= ReportTime;
         }
     }
 

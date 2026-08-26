@@ -11,18 +11,23 @@ namespace FusionHUD.Monitoring.Services
 
         private readonly IDailyStatisticsStore _DailyStatisticsStore;
 
+        private readonly IPendingReportStore _PendingReportStore;
+
         private readonly IDailyReportService _DailyReportService;
 
         private readonly IDailyReportSender _DailyReportSender;
 
         public DailyMonitoringService(IPerformanceDataProvider PerformanceDataProvider, IStatisticsService StatisticsService,
-                                      IDailyStatisticsStore DailyStatisticsStore, IDailyReportService DailyReportService, IDailyReportSender DailyReportSender)
+                                      IDailyStatisticsStore DailyStatisticsStore, IPendingReportStore PendingReportStore,
+                                      IDailyReportService DailyReportService, IDailyReportSender DailyReportSender)
         {
             _PerformanceDataProvider = PerformanceDataProvider;
 
             _StatisticsService = StatisticsService;
 
             _DailyStatisticsStore = DailyStatisticsStore;
+
+            _PendingReportStore = PendingReportStore;
 
             _DailyReportService = DailyReportService;
 
@@ -31,6 +36,8 @@ namespace FusionHUD.Monitoring.Services
 
         public async Task InitializeAsync(CancellationToken CancellationToken = default)
         {
+            await SendPendingReportAsync(CancellationToken);
+
             StatisticsState? State = await _DailyStatisticsStore.LoadAsync(CancellationToken);
 
             if (State is null)
@@ -46,7 +53,9 @@ namespace FusionHUD.Monitoring.Services
 
             if (StateDate != CurrentDate)
             {
-                await _DailyStatisticsStore.DeleteAsync(CancellationToken);
+                await MoveStateToPendingReportAsync(State, CancellationToken);
+
+                await SendPendingReportAsync(CancellationToken);
 
                 _StatisticsService.Reset();
 
@@ -64,7 +73,7 @@ namespace FusionHUD.Monitoring.Services
 
             if (StatisticsDate != CurrentDate)
             {
-                _StatisticsService.Reset();
+                await ProcessDateChangeAsync(CancellationToken);
             }
 
             PerformanceSample Sample = _PerformanceDataProvider.GetPerformanceSample();
@@ -78,13 +87,62 @@ namespace FusionHUD.Monitoring.Services
 
         public async Task ProcessDailyReportAsync(CancellationToken CancellationToken = default)
         {
-            string Report = _DailyReportService.CreateReport(_StatisticsService.Statistics);
+            StatisticsState? State = await _DailyStatisticsStore.LoadAsync(CancellationToken);
 
-            await _DailyReportSender.SendAsync(Report, CancellationToken);
+            if (State is null)
+            {
+                return;
+            }
+
+            await MoveStateToPendingReportAsync(State, CancellationToken);
 
             await _DailyStatisticsStore.DeleteAsync(CancellationToken);
 
             _StatisticsService.Reset();
+
+            await SendPendingReportAsync(CancellationToken);
+        }
+
+        private async Task ProcessDateChangeAsync(CancellationToken CancellationToken)
+        {
+            StatisticsState State = _StatisticsService.State;
+
+            await MoveStateToPendingReportAsync(State, CancellationToken);
+
+            await _DailyStatisticsStore.DeleteAsync(CancellationToken);
+
+            _StatisticsService.Reset();
+
+            await SendPendingReportAsync(CancellationToken);
+        }
+
+        private async Task MoveStateToPendingReportAsync(StatisticsState State, CancellationToken CancellationToken)
+        {
+            PendingReport PendingReport =
+                new()
+                {
+                    Date = State.Date,
+
+                    Statistics = State.Statistics
+                };
+
+            await _PendingReportStore.SaveAsync(PendingReport, CancellationToken);
+        }
+
+        private async Task SendPendingReportAsync(CancellationToken CancellationToken)
+        {
+            PendingReport? PendingReport = await _PendingReportStore.LoadAsync(CancellationToken);
+
+            if (PendingReport is null)
+            {
+                return;
+            }
+
+            string Report = _DailyReportService.CreateReport(PendingReport.Statistics);
+
+            await _DailyReportSender.SendAsync(Report, CancellationToken);
+
+            await _PendingReportStore.DeleteAsync(CancellationToken);
         }
     }
 
