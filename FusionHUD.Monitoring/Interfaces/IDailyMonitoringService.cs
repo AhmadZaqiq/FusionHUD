@@ -1,7 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-
-namespace FusionHUD.Monitoring.Interfaces
+﻿namespace FusionHUD.Monitoring.Interfaces
 {
     public interface IDailyMonitoringService
     {
@@ -9,7 +6,7 @@ namespace FusionHUD.Monitoring.Interfaces
 
         Task ProcessSampleAsync(CancellationToken CancellationToken = default);
 
-        Task ProcessDailyReportAsync(CancellationToken CancellationToken = default);
+        Task ProcessDailyReportIfDueAsync(CancellationToken CancellationToken = default);
     }
 
 }

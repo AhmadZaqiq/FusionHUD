@@ -17,9 +17,11 @@ namespace FusionHUD.Monitoring.Services
 
         private readonly IDailyReportSender _DailyReportSender;
 
+        private readonly IReportScheduleService _ReportScheduleService;
+
         public DailyMonitoringService(IPerformanceDataProvider PerformanceDataProvider, IStatisticsService StatisticsService,
-                                      IDailyStatisticsStore DailyStatisticsStore, IPendingReportStore PendingReportStore,
-                                      IDailyReportService DailyReportService, IDailyReportSender DailyReportSender)
+                                      IDailyStatisticsStore DailyStatisticsStore, IPendingReportStore PendingReportStore, IDailyReportService DailyReportService,
+                                      IDailyReportSender DailyReportSender, IReportScheduleService ReportScheduleService)
         {
             _PerformanceDataProvider = PerformanceDataProvider;
 
@@ -32,6 +34,8 @@ namespace FusionHUD.Monitoring.Services
             _DailyReportService = DailyReportService;
 
             _DailyReportSender = DailyReportSender;
+
+            _ReportScheduleService = ReportScheduleService;
         }
 
         public async Task InitializeAsync(CancellationToken CancellationToken = default)
@@ -44,6 +48,8 @@ namespace FusionHUD.Monitoring.Services
             {
                 _StatisticsService.Reset();
 
+                await SaveCurrentStateAsync(CancellationToken);
+
                 return;
             }
 
@@ -51,13 +57,30 @@ namespace FusionHUD.Monitoring.Services
 
             DateOnly StateDate = DateOnly.FromDateTime(State.Date);
 
-            if (StateDate != CurrentDate)
+            if (StateDate < CurrentDate)
             {
                 await MoveStateToPendingReportAsync(State, CancellationToken);
 
-                await SendPendingReportAsync(CancellationToken);
+                await _DailyStatisticsStore.DeleteAsync(CancellationToken);
+
+                _StatisticsService.Restore(State);
+
+                _StatisticsService.MarkReportSent(StateDate);
 
                 _StatisticsService.Reset();
+
+                await SaveCurrentStateAsync(CancellationToken);
+
+                await SendPendingReportAsync(CancellationToken);
+
+                return;
+            }
+
+            if (StateDate > CurrentDate)
+            {
+                _StatisticsService.Reset();
+
+                await SaveCurrentStateAsync(CancellationToken);
 
                 return;
             }
@@ -85,33 +108,47 @@ namespace FusionHUD.Monitoring.Services
             await _DailyStatisticsStore.SaveAsync(_StatisticsService.State, CancellationToken);
         }
 
-        public async Task ProcessDailyReportAsync(CancellationToken CancellationToken = default)
+        public async Task ProcessDailyReportIfDueAsync(CancellationToken CancellationToken = default)
         {
-            StatisticsState? State = await _DailyStatisticsStore.LoadAsync(CancellationToken);
+            DateTime CurrentTime = DateTime.Now;
 
-            if (State is null)
+            if (!_ReportScheduleService.IsReportDue(CurrentTime, _StatisticsService.LastReportDate))
             {
                 return;
             }
 
-            await MoveStateToPendingReportAsync(State, CancellationToken);
+            DateOnly ReportDate = DateOnly.FromDateTime(CurrentTime);
 
-            await _DailyStatisticsStore.DeleteAsync(CancellationToken);
-
-            _StatisticsService.Reset();
-
-            await SendPendingReportAsync(CancellationToken);
-        }
-
-        private async Task ProcessDateChangeAsync(CancellationToken CancellationToken)
-        {
             StatisticsState State = _StatisticsService.State;
 
             await MoveStateToPendingReportAsync(State, CancellationToken);
 
             await _DailyStatisticsStore.DeleteAsync(CancellationToken);
 
+            await SendPendingReportAsync(CancellationToken);
+
+            _StatisticsService.MarkReportSent(ReportDate);
+
             _StatisticsService.Reset();
+
+            await SaveCurrentStateAsync(CancellationToken);
+        }
+
+        private async Task ProcessDateChangeAsync(CancellationToken CancellationToken)
+        {
+            StatisticsState State = _StatisticsService.State;
+
+            DateOnly StatisticsDate = DateOnly.FromDateTime(State.Date);
+
+            await MoveStateToPendingReportAsync(State, CancellationToken);
+
+            await _DailyStatisticsStore.DeleteAsync(CancellationToken);
+
+            _StatisticsService.MarkReportSent(StatisticsDate);
+
+            _StatisticsService.Reset();
+
+            await SaveCurrentStateAsync(CancellationToken);
 
             await SendPendingReportAsync(CancellationToken);
         }
@@ -143,6 +180,11 @@ namespace FusionHUD.Monitoring.Services
             await _DailyReportSender.SendAsync(Report, CancellationToken);
 
             await _PendingReportStore.DeleteAsync(CancellationToken);
+        }
+
+        private async Task SaveCurrentStateAsync(CancellationToken CancellationToken)
+        {
+            await _DailyStatisticsStore.SaveAsync(_StatisticsService.State, CancellationToken);
         }
     }
 

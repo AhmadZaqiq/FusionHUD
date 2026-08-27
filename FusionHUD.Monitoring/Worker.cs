@@ -8,15 +8,11 @@ namespace FusionHUD.Monitoring
     {
         private readonly IDailyMonitoringService _DailyMonitoringService;
 
-        private readonly IReportScheduleService _ReportScheduleService;
-
         private readonly MonitoringOptions _MonitoringOptions;
 
-        public Worker(IDailyMonitoringService DailyMonitoringService, IReportScheduleService ReportScheduleService, MonitoringOptions MonitoringOptions)
+        public Worker(IDailyMonitoringService DailyMonitoringService, MonitoringOptions MonitoringOptions)
         {
             _DailyMonitoringService = DailyMonitoringService;
-
-            _ReportScheduleService = ReportScheduleService;
 
             _MonitoringOptions = MonitoringOptions;
         }
@@ -27,8 +23,6 @@ namespace FusionHUD.Monitoring
 
             using PeriodicTimer Timer = new(TimeSpan.FromSeconds(_MonitoringOptions.SampleIntervalSeconds));
 
-            DateOnly LastProcessedReportDate = DateOnly.MinValue;
-
             while (!StoppingToken.IsCancellationRequested && await Timer.WaitForNextTickAsync(StoppingToken))
             {
                 await _DailyMonitoringService.ProcessSampleAsync(StoppingToken);
@@ -38,23 +32,7 @@ namespace FusionHUD.Monitoring
                     break;
                 }
 
-                DateTime CurrentTime = DateTime.Now;
-
-                if (!_ReportScheduleService.IsReportDue(CurrentTime))
-                {
-                    continue;
-                }
-
-                DateOnly CurrentDate = DateOnly.FromDateTime(CurrentTime);
-
-                if (CurrentDate == LastProcessedReportDate)
-                {
-                    continue;
-                }
-
-                await _DailyMonitoringService.ProcessDailyReportAsync(StoppingToken);
-
-                LastProcessedReportDate = CurrentDate;
+                await _DailyMonitoringService.ProcessDailyReportIfDueAsync(StoppingToken);
             }
         }
     }

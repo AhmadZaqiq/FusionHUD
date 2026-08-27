@@ -2,7 +2,7 @@
 {
     public interface IReportScheduleService
     {
-        bool IsReportDue(DateTime CurrentTime);
+        bool IsReportDue(DateTime CurrentTime, DateOnly? LastReportDate);
     }
 
 }

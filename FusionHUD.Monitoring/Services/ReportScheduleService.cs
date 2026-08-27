@@ -12,9 +12,16 @@ namespace FusionHUD.Monitoring.Services
             _MonitoringOptions = MonitoringOptions;
         }
 
-        public bool IsReportDue(DateTime CurrentTime)
+        public bool IsReportDue(DateTime CurrentTime, DateOnly? LastReportDate)
         {
-            if (!TimeSpan.TryParse(_MonitoringOptions.ReportTime,out TimeSpan ReportTime))
+            if (!TimeSpan.TryParse(_MonitoringOptions.ReportTime, out TimeSpan ReportTime))
+            {
+                return false;
+            }
+
+            DateOnly CurrentDate = DateOnly.FromDateTime(CurrentTime);
+
+            if (LastReportDate == CurrentDate)
             {
                 return false;
             }

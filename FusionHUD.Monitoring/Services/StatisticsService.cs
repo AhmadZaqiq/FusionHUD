@@ -27,6 +27,8 @@ namespace FusionHUD.Monitoring.Services
 
         public DailyStatistics Statistics { get; } = new();
 
+        public DateOnly? LastReportDate { get; private set; }
+
         public StatisticsState State
         {
             get
@@ -34,6 +36,8 @@ namespace FusionHUD.Monitoring.Services
                 return new StatisticsState
                 {
                     Date = Statistics.StartTime.Date,
+
+                    LastReportDate = LastReportDate,
 
                     Statistics = Statistics,
 
@@ -98,7 +102,10 @@ namespace FusionHUD.Monitoring.Services
             _FpsTotal = State.FpsTotal;
             _FpsSamples = State.FpsSamples;
 
+            LastReportDate = State.LastReportDate;
+
             Statistics.StartTime = State.Statistics.StartTime;
+            Statistics.Uptime = State.Statistics.Uptime;
 
             Statistics.CpuUsageAverage = State.Statistics.CpuUsageAverage;
             Statistics.CpuUsageMaximum = State.Statistics.CpuUsageMaximum;
@@ -162,6 +169,11 @@ namespace FusionHUD.Monitoring.Services
             Statistics.RamUsageMaximum = 0;
 
             Statistics.FpsAverage = 0;
+        }
+
+        public void MarkReportSent(DateOnly ReportDate)
+        {
+            LastReportDate = ReportDate;
         }
 
         private void UpdateCpuUsage(double Value)
@@ -250,11 +262,6 @@ namespace FusionHUD.Monitoring.Services
             _FpsSamples++;
 
             Statistics.FpsAverage = _FpsTotal / _FpsSamples;
-        }
-
-        public void SetReportSent(bool IsReportSent)
-        {
-            Statistics.IsReportSent = IsReportSent;
         }
     }
 

@@ -8,6 +8,8 @@ namespace FusionHUD.Monitoring.Interfaces
 
         StatisticsState State { get; }
 
+        DateOnly? LastReportDate { get; }
+
         void Update(PerformanceSample Sample);
 
         void UpdateUptime();
@@ -16,7 +18,7 @@ namespace FusionHUD.Monitoring.Interfaces
 
         void Reset();
 
-        void SetReportSent(bool IsReportSent);
+        void MarkReportSent(DateOnly ReportDate);
     }
 
 }
