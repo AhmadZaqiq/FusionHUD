@@ -11,15 +11,9 @@ namespace FusionHUD.Overlay.Extensions
         {
             Services.AddSingleton<IOverlaySettingsService, OverlaySettingsService>();
 
-            Services.AddSingleton<IOverlayPositionService, OverlayPositionService>();
-
-            Services.AddSingleton<IOverlaySizeService, OverlaySizeService>();
-
-            Services.AddSingleton<IOverlayColorService, OverlayColorService>();
+            Services.AddSingleton<IOverlayPresentationService, OverlayPresentationService>();
 
             Services.AddSingleton<IHotkeyService, HotkeyService>();
-
-            Services.AddSingleton<IOverlayAlignmentService, OverlayAlignmentService>();
 
             Services.AddSingleton<IOverlayClickThroughService, OverlayClickThroughService>();
 

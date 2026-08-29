@@ -12,24 +12,18 @@ namespace FusionHUD.Overlay
 
         private readonly IOverlaySettingsService _SettingsService;
 
-        private readonly IOverlayPositionService _PositionService;
-
-        private readonly IOverlaySizeService _SizeService;
-
-        private readonly IOverlayColorService _ColorService;
+        private readonly IOverlayPresentationService _PresentationService;
 
         private readonly IHotkeyService _HotkeyService;
 
-        private readonly IOverlayAlignmentService _AlignmentService;
 
         private readonly IOverlayClickThroughService _ClickThroughService;
 
         private HwndSource? _HwndSource;
 
         public MainWindow(MainViewModel ViewModel, IOverlaySettingsService SettingsService,
-                          IOverlayPositionService PositionService, IOverlaySizeService SizeService,
-                          IOverlayColorService ColorService, IHotkeyService HotkeyService,
-                          IOverlayAlignmentService AlignmentService, IOverlayClickThroughService ClickThroughService)
+                          IOverlayPresentationService PresentationService, IHotkeyService HotkeyService,
+                          IOverlayClickThroughService ClickThroughService)
         {
             InitializeComponent();
 
@@ -37,15 +31,9 @@ namespace FusionHUD.Overlay
 
             _SettingsService = SettingsService;
 
-            _PositionService = PositionService;
-
-            _SizeService = SizeService;
-
-            _ColorService = ColorService;
-
             _HotkeyService = HotkeyService;
 
-            _AlignmentService = AlignmentService;
+            _PresentationService = PresentationService;
 
             _ClickThroughService = ClickThroughService;
 
@@ -130,38 +118,30 @@ namespace FusionHUD.Overlay
         {
             _SettingsService.MoveToNextPosition();
 
-            OverlayPosition Position = _SettingsService.Settings.Position;
+            _PresentationService.ApplyPosition(this, _SettingsService.Settings.Position);
 
-            _PositionService.ApplyPosition(this, Position);
-
-            _AlignmentService.ApplyAlignment(this, Position);
+            _PresentationService.ApplyAlignment(this, _SettingsService.Settings.Position);
         }
 
         private void ChangeSize()
         {
             _SettingsService.MoveToNextSize();
 
-            _SizeService.ApplySize(this, _SettingsService.Settings.Size);
+            _PresentationService.ApplySize(this, _SettingsService.Settings.Size);
 
-            _PositionService.ApplyPosition(this, _SettingsService.Settings.Position);
+            _PresentationService.ApplyPosition(this, _SettingsService.Settings.Position);
         }
 
         private void ChangeColor()
         {
             _SettingsService.MoveToNextColor();
 
-            _ColorService.ApplyColor(this, _SettingsService.Settings.Color);
+            _PresentationService.ApplyColor(this, _SettingsService.Settings.Color);
         }
 
         private void ApplySettings()
         {
-            _SizeService.ApplySize(this, _SettingsService.Settings.Size);
-
-            _PositionService.ApplyPosition(this, _SettingsService.Settings.Position);
-
-            _ColorService.ApplyColor(this, _SettingsService.Settings.Color);
-
-            _AlignmentService.ApplyAlignment(this, _SettingsService.Settings.Position);
+            _PresentationService.ApplySettings(this, _SettingsService.Settings);
         }
     }
 

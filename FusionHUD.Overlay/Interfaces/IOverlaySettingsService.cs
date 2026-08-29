@@ -7,15 +7,11 @@ namespace FusionHUD.Overlay.Interfaces
         OverlaySettings Settings { get; }
 
         void SetPosition(OverlayPosition Position);
-
         void SetSize(OverlaySize Size);
-
         void SetColor(OverlayColor Color);
 
         void MoveToNextPosition();
-
         void MoveToNextSize();
-
         void MoveToNextColor();
     }
 
