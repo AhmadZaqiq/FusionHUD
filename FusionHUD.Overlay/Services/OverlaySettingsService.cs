@@ -6,12 +6,12 @@ using System.Text.Json.Serialization;
 
 namespace FusionHUD.Overlay.Services
 {
-    public class OverlaySettingsService : IOverlaySettingsService
+    public sealed class OverlaySettingsService : IOverlaySettingsService
     {
         private readonly string _SettingsFilePath;
 
         private readonly JsonSerializerOptions _JsonOptions =
-            new JsonSerializerOptions
+            new()
             {
                 WriteIndented = true,
                 Converters =
@@ -20,7 +20,7 @@ namespace FusionHUD.Overlay.Services
                 }
             };
 
-        public OverlaySettings Settings { get; private set; }
+        public OverlaySettings Settings { get; }
 
         public OverlaySettingsService()
         {

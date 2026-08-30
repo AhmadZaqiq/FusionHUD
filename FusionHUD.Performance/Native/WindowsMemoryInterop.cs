@@ -22,4 +22,5 @@ namespace FusionHUD.Performance.Native
             internal ulong ullAvailExtendedVirtual;
         }
     }
+
 }

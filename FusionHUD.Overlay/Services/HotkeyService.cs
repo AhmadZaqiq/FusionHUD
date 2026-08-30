@@ -18,8 +18,7 @@ namespace FusionHUD.Overlay.Services
 
         public void Register(IntPtr Handle)
         {
-            RegisterHotKey(
-                Handle, TOGGLE_VISIBILITY_ID, MOD_CONTROL | MOD_SHIFT, (int)'O');
+            RegisterHotKey(Handle, TOGGLE_VISIBILITY_ID, MOD_CONTROL | MOD_SHIFT, (int)'O');
 
             RegisterHotKey(Handle, CHANGE_POSITION_ID, MOD_CONTROL | MOD_SHIFT, (int)'P');
 

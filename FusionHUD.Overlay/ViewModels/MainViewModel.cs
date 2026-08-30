@@ -1,21 +1,31 @@
-﻿using FusionHUD.Performance.Interfaces;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using FusionHUD.Overlay.Interfaces;
+using FusionHUD.Performance.Interfaces;
 using System.Windows.Threading;
 
 namespace FusionHUD.Overlay.ViewModels
 {
-    public class MainViewModel : INotifyPropertyChanged
+    public partial class MainViewModel : ObservableObject
     {
         private readonly IPerformanceService _PerformanceService;
 
+        private readonly IOverlaySettingsService _SettingsService;
+
+        private readonly IOverlayWindowService _WindowService;
+
         private readonly DispatcherTimer _UpdateTimer;
 
+        [ObservableProperty]
         private string _OverlayText = string.Empty;
 
-        public MainViewModel(IPerformanceService PerformanceService)
+        public MainViewModel(IPerformanceService PerformanceService, IOverlaySettingsService SettingsService, IOverlayWindowService WindowService)
         {
             _PerformanceService = PerformanceService;
+
+            _SettingsService = SettingsService;
+
+            _WindowService = WindowService;
 
             _UpdateTimer = new DispatcherTimer
             {
@@ -29,24 +39,34 @@ namespace FusionHUD.Overlay.ViewModels
             _UpdateTimer.Start();
         }
 
-        public string OverlayText
+        [RelayCommand]
+        private void ToggleVisibility()
         {
-            get
-            {
-                return _OverlayText;
-            }
+            _WindowService.ToggleVisibility();
+        }
 
-            private set
-            {
-                if (_OverlayText == value)
-                {
-                    return;
-                }
+        [RelayCommand]
+        private void ChangePosition()
+        {
+            _SettingsService.MoveToNextPosition();
 
-                _OverlayText = value;
+            _WindowService.ApplySettings();
+        }
 
-                OnPropertyChanged();
-            }
+        [RelayCommand]
+        private void ChangeSize()
+        {
+            _SettingsService.MoveToNextSize();
+
+            _WindowService.ApplySettings();
+        }
+
+        [RelayCommand]
+        private void ChangeColor()
+        {
+            _SettingsService.MoveToNextColor();
+
+            _WindowService.ApplySettings();
         }
 
         private void UpdateTimer_Tick(object? Sender, EventArgs e)
@@ -59,32 +79,18 @@ namespace FusionHUD.Overlay.ViewModels
             var Snapshot = _PerformanceService.GetPerformanceSnapshot();
 
             string FPSDisplay = Snapshot.FPS <= 0 ? "N/A" : $"{Snapshot.FPS:F0}";
-
             string GPUUsageDisplay = Snapshot.GPUUsage < 0 ? "N/A" : $"{Snapshot.GPUUsage:F1}%";
-
             string GPUTemperatureDisplay = Snapshot.GPUTemperature <= 0 ? "N/A" : $"{Snapshot.GPUTemperature:F0}°C";
-
             string VRAMDisplay = Snapshot.VRAM < 0 ? "N/A" : $"{Snapshot.VRAM:F1} GB";
-
-            string CPUUsageDisplay = Snapshot.CPUUsage <= 0 ? "N/A" : $"{Snapshot.CPUUsage:F1}%";
-
+            string CPUUsageDisplay = Snapshot.CPUUsage < 0 ? "N/A" : $"{Snapshot.CPUUsage:F1}%";
             string CPUTemperatureDisplay = Snapshot.CPUTemperature <= 0 ? "N/A" : $"{Snapshot.CPUTemperature:F0}°C";
+            string RAMDisplay = Snapshot.RAMUsage <= 0 ? "N/A" : $"{Snapshot.RAMUsage:F1} GB";
 
-            string RAMDisplay = Snapshot.RAMUsage <= 0
-                ? "N/A"
-                : $"{Snapshot.RAMUsage:F1} GB";
-
-            OverlayText = $"FPS {FPSDisplay} | " +
+            OverlayText =
+                $"FPS {FPSDisplay} | " +
                 $"{Snapshot.GPUName} {GPUUsageDisplay} {GPUTemperatureDisplay} {VRAMDisplay} | " +
                 $"{Snapshot.CPUName} {CPUUsageDisplay} {CPUTemperatureDisplay} | " +
                 $"RAM {RAMDisplay}";
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        private void OnPropertyChanged([CallerMemberName] string? PropertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
         }
     }
 

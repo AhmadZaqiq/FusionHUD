@@ -9,6 +9,8 @@ namespace FusionHUD.Overlay.Extensions
     {
         public static IServiceCollection AddOverlayServices(this IServiceCollection Services)
         {
+            Services.AddSingleton<IOverlayWindowService, OverlayWindowService>();
+
             Services.AddSingleton<IOverlaySettingsService, OverlaySettingsService>();
 
             Services.AddSingleton<IOverlayPresentationService, OverlayPresentationService>();

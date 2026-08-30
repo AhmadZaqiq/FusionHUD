@@ -22,4 +22,5 @@ namespace FusionHUD.Performance.Native
             return GetWindowThreadProcessId(WindowHandle, out uint ProcessID) == 0 ? 0 : ProcessID;
         }
     }
+
 }
