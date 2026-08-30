@@ -25,9 +25,11 @@ namespace FusionHUD.Performance.Providers
             {
                 PhysicalGPU[] GPUs = PhysicalGPU.GetPhysicalGPUs();
 
-                _GraphicsCard = GPUs.FirstOrDefault();
+                PhysicalGPU? GraphicsCard = GPUs.FirstOrDefault();
 
-                GPUName = _GraphicsCard is null? "N/A": FormatGPUName(_GraphicsCard.FullName);
+                _GraphicsCard = GraphicsCard;
+
+                GPUName = GraphicsCard is null ? "N/A" : FormatGPUName(GraphicsCard.FullName);
             }
             catch
             {
@@ -46,21 +48,27 @@ namespace FusionHUD.Performance.Providers
 
             try
             {
-                float GPUUsage =_GraphicsCard.UsageInformation.GPU.Percentage;
+                var GPU = _GraphicsCard.UsageInformation.GPU;
+
+                if (GPU is null)
+                {
+                    return 0;
+                }
+
+                float GPUUsage = GPU.Percentage;
 
                 if (GPUUsage < 0 || GPUUsage > 100)
                 {
                     return 0;
                 }
 
-                return AddAndAverage(_GPUUsageHistory,GPUUsage);
+                return AddAndAverage(_GPUUsageHistory, GPUUsage);
             }
             catch
             {
                 return 0;
             }
         }
-
         public float GetGPUTemperature()
         {
             if (_GraphicsCard is null)

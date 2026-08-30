@@ -1,4 +1,5 @@
 ﻿using FusionHUD.Performance.Interfaces;
+using FusionHUD.Performance.Native;
 using System.Runtime.InteropServices;
 
 namespace FusionHUD.Performance.Services
@@ -7,12 +8,12 @@ namespace FusionHUD.Performance.Services
     {
         public double GetRAMUsage()
         {
-            MEMORYSTATUSEX MemoryStatus = new()
+            WindowsMemoryInterop.MEMORYSTATUSEX MemoryStatus = new()
             {
-                dwLength = (uint)Marshal.SizeOf<MEMORYSTATUSEX>()
+                dwLength = (uint)Marshal.SizeOf<WindowsMemoryInterop.MEMORYSTATUSEX>()
             };
 
-            if (!GlobalMemoryStatusEx(ref MemoryStatus))
+            if (!WindowsMemoryInterop.GlobalMemoryStatusEx(ref MemoryStatus))
             {
                 return 0;
             }
@@ -21,24 +22,6 @@ namespace FusionHUD.Performance.Services
 
             return UsedMemory / 1024.0 / 1024.0 / 1024.0;
         }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct MEMORYSTATUSEX
-        {
-            public uint dwLength;
-            public uint dwMemoryLoad;
-            public ulong ullTotalPhys;
-            public ulong ullAvailPhys;
-            public ulong ullTotalPageFile;
-            public ulong ullAvailPageFile;
-            public ulong ullTotalVirtual;
-            public ulong ullAvailVirtual;
-            public ulong ullAvailExtendedVirtual;
-        }
-
-        [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
     }
 
 }

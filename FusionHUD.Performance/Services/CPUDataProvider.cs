@@ -1,6 +1,6 @@
 ﻿using FusionHUD.Performance.Interfaces;
+using FusionHUD.Performance.Native;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 
 namespace FusionHUD.Performance.Services
@@ -8,8 +8,6 @@ namespace FusionHUD.Performance.Services
     [SupportedOSPlatform("windows")]
     public sealed class CPUDataProvider : ICPUDataProvider, IDisposable
     {
-        private const string AMD_DLL = "FusionHUD.AMD.dll";
-
         private const int SMOOTH_SAMPLES = 5;
 
         private readonly PerformanceCounter _CPUUsageCounter;
@@ -70,7 +68,7 @@ namespace FusionHUD.Performance.Services
 
             try
             {
-                float Temperature = (float)GetCPUTemperatureNative();
+                float Temperature = (float)FusionHUDAMDInterop.GetCPUTemperature();
 
                 if (Temperature <= 0 || Temperature > 150)
                 {
@@ -126,7 +124,7 @@ namespace FusionHUD.Performance.Services
         {
             try
             {
-                return InitAMDMonitor();
+                return FusionHUDAMDInterop.InitAMDMonitor();
             }
             catch
             {
@@ -165,7 +163,7 @@ namespace FusionHUD.Performance.Services
             {
                 try
                 {
-                    ShutdownAMDMonitor();
+                    FusionHUDAMDInterop.ShutdownAMDMonitor();
                 }
                 catch
                 {
@@ -185,16 +183,6 @@ namespace FusionHUD.Performance.Services
 
             GC.SuppressFinalize(this);
         }
-
-        [DllImport(AMD_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint = "InitAMDMonitor")]
-        [return: MarshalAs(UnmanagedType.I1)]
-        private static extern bool InitAMDMonitor();
-
-        [DllImport(AMD_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint = "GetCPUTemperature")]
-        private static extern double GetCPUTemperatureNative();
-
-        [DllImport(AMD_DLL, CallingConvention = CallingConvention.Cdecl, EntryPoint = "ShutdownAMDMonitor")]
-        private static extern void ShutdownAMDMonitor();
     }
 
 }

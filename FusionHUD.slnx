@@ -6,6 +6,7 @@
   </Configurations>
   <Project Path="FusionHUD.Monitoring/FusionHUD.Monitoring.csproj">
     <Platform Solution="*|ARM64" Project="ARM64" />
+    <Platform Solution="Debug|Any CPU" Project="x64" />
     <Platform Solution="Debug|x64" Project="x64" />
   </Project>
   <Project Path="FusionHUD.Overlay/FusionHUD.Overlay.csproj">

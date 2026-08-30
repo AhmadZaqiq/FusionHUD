@@ -1,6 +1,6 @@
 ﻿using FusionHUD.Performance.Interfaces;
+using FusionHUD.Performance.Native;
 using System.IO.MemoryMappedFiles;
-using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 
 namespace FusionHUD.Performance.Services
@@ -28,7 +28,7 @@ namespace FusionHUD.Performance.Services
         {
             try
             {
-                uint ForegroundProcessID = GetForegroundProcessID();
+                uint ForegroundProcessID = WindowsProcessInterop.GetForegroundProcessID();
 
                 if (ForegroundProcessID == 0)
                 {
@@ -65,8 +65,7 @@ namespace FusionHUD.Performance.Services
                         continue;
                     }
 
-                    int FPS =
-                        Accessor.ReadInt32(EntryOffset + FPS_OFFSET) - 1;
+                    int FPS = Accessor.ReadInt32(EntryOffset + FPS_OFFSET) - 1;
 
                     if (FPS <= 0)
                     {
@@ -112,24 +111,5 @@ namespace FusionHUD.Performance.Services
                 _FPSHistory.Clear();
             }
         }
-
-        private static uint GetForegroundProcessID()
-        {
-            IntPtr WindowHandle = GetForegroundWindow();
-
-            if (WindowHandle == IntPtr.Zero)
-            {
-                return 0;
-            }
-
-            return GetWindowThreadProcessId(WindowHandle, out uint ProcessID) == 0 ? 0 : ProcessID;
-        }
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr GetForegroundWindow();
-
-        [DllImport("user32.dll")]
-        private static extern uint GetWindowThreadProcessId(IntPtr WindowHandle, out uint ProcessID);
     }
-
 }
