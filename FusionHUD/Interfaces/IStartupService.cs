@@ -8,5 +8,4 @@
 
         bool IsStartupEnabled();
     }
-
 }

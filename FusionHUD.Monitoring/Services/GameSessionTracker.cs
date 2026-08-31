@@ -11,6 +11,10 @@ namespace FusionHUD.Monitoring.Services
 
         private string _GameName = string.Empty;
 
+        private string _CPUName = string.Empty;
+
+        private string _GPUName = string.Empty;
+
         private DateTime _SessionStartTime;
 
         private readonly List<PerformanceSample> _Samples = new();
@@ -48,6 +52,10 @@ namespace FusionHUD.Monitoring.Services
 
             _GameName = Sample.GameName;
 
+            _CPUName = Sample.CPUName;
+
+            _GPUName = Sample.GPUName;
+
             _SessionStartTime = Sample.Timestamp;
 
             _Samples.Clear();
@@ -62,6 +70,11 @@ namespace FusionHUD.Monitoring.Services
                 return new GameSessionStatistics
                 {
                     GameName = _GameName,
+
+                    CPUName = _CPUName,
+
+                    GPUName = _GPUName,
+
                     Duration = EndTime - _SessionStartTime
                 };
             }
@@ -69,6 +82,10 @@ namespace FusionHUD.Monitoring.Services
             GameSessionStatistics Statistics = new()
             {
                 GameName = _GameName,
+
+                CPUName = _CPUName,
+
+                GPUName = _GPUName,
 
                 Duration = EndTime - _SessionStartTime,
 
@@ -103,10 +120,13 @@ namespace FusionHUD.Monitoring.Services
 
             _GameName = string.Empty;
 
+            _CPUName = string.Empty;
+
+            _GPUName = string.Empty;
+
             _SessionStartTime = default;
 
             _Samples.Clear();
         }
     }
-
 }

@@ -8,6 +8,10 @@
 
         public TimeSpan Uptime { get; set; }
 
+        public string CPUName { get; set; } = string.Empty;
+
+        public string GPUName { get; set; } = string.Empty;
+
         public double CpuUsageAverage { get; set; }
         public double CpuUsageMaximum { get; set; }
 

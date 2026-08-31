@@ -4,6 +4,10 @@
     {
         public string GameName { get; init; } = string.Empty;
 
+        public string CPUName { get; init; } = string.Empty;
+
+        public string GPUName { get; init; } = string.Empty;
+
         public TimeSpan Duration { get; init; }
 
         public double FpsAverage { get; init; }
@@ -23,5 +27,4 @@
         public double RamUsageAverage { get; init; }
         public double RamUsageMaximum { get; init; }
     }
-
 }

@@ -64,6 +64,16 @@ namespace FusionHUD.Monitoring.Services
 
         public void Update(PerformanceSample Sample)
         {
+            if (string.IsNullOrWhiteSpace(Statistics.CPUName))
+            {
+                Statistics.CPUName = Sample.CPUName;
+            }
+
+            if (string.IsNullOrWhiteSpace(Statistics.GPUName))
+            {
+                Statistics.GPUName = Sample.GPUName;
+            }
+
             UpdateCpuUsage(Sample.CpuUsage);
 
             UpdateCpuTemperature(Sample.CpuTemperature);
@@ -103,7 +113,12 @@ namespace FusionHUD.Monitoring.Services
             LastReportDate = State.LastReportDate;
 
             Statistics.StartTime = State.Statistics.StartTime;
+
             Statistics.Uptime = State.Statistics.Uptime;
+
+            Statistics.CPUName = State.Statistics.CPUName;
+
+            Statistics.GPUName = State.Statistics.GPUName;
 
             Statistics.CpuUsageAverage = State.Statistics.CpuUsageAverage;
             Statistics.CpuUsageMaximum = State.Statistics.CpuUsageMaximum;
@@ -121,6 +136,7 @@ namespace FusionHUD.Monitoring.Services
             Statistics.RamUsageMaximum = State.Statistics.RamUsageMaximum;
 
             _SessionStartTime = DateTime.Now;
+
             Statistics.Uptime = TimeSpan.Zero;
         }
 
@@ -145,7 +161,12 @@ namespace FusionHUD.Monitoring.Services
             _FpsSamples = 0;
 
             Statistics.StartTime = DateTime.Now;
+
             Statistics.Uptime = TimeSpan.Zero;
+
+            Statistics.CPUName = string.Empty;
+
+            Statistics.GPUName = string.Empty;
 
             _SessionStartTime = DateTime.Now;
 
@@ -173,6 +194,7 @@ namespace FusionHUD.Monitoring.Services
         private void UpdateCpuUsage(double Value)
         {
             _CpuUsageTotal += Value;
+
             _CpuUsageSamples++;
 
             Statistics.CpuUsageAverage = _CpuUsageTotal / _CpuUsageSamples;
@@ -191,6 +213,7 @@ namespace FusionHUD.Monitoring.Services
             }
 
             _CpuTemperatureTotal += Value;
+
             _CpuTemperatureSamples++;
 
             Statistics.CpuTemperatureAverage = _CpuTemperatureTotal / _CpuTemperatureSamples;
@@ -204,6 +227,7 @@ namespace FusionHUD.Monitoring.Services
         private void UpdateGpuUsage(double Value)
         {
             _GpuUsageTotal += Value;
+
             _GpuUsageSamples++;
 
             Statistics.GpuUsageAverage = _GpuUsageTotal / _GpuUsageSamples;
@@ -222,6 +246,7 @@ namespace FusionHUD.Monitoring.Services
             }
 
             _GpuTemperatureTotal += Value;
+
             _GpuTemperatureSamples++;
 
             Statistics.GpuTemperatureAverage = _GpuTemperatureTotal / _GpuTemperatureSamples;
@@ -235,6 +260,7 @@ namespace FusionHUD.Monitoring.Services
         private void UpdateRamUsage(double Value)
         {
             _RamUsageTotal += Value;
+
             _RamUsageSamples++;
 
             Statistics.RamUsageAverage = _RamUsageTotal / _RamUsageSamples;
@@ -244,7 +270,5 @@ namespace FusionHUD.Monitoring.Services
                 Statistics.RamUsageMaximum = Value;
             }
         }
-
     }
-
 }

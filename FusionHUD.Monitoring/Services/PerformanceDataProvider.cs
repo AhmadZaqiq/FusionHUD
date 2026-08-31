@@ -21,6 +21,10 @@ namespace FusionHUD.Monitoring.Services
             {
                 Timestamp = DateTime.Now,
 
+                CPUName = Snapshot.CPUName,
+
+                GPUName = Snapshot.GPUName,
+
                 GameName = Snapshot.GameName,
 
                 CpuUsage = Snapshot.CPUUsage,

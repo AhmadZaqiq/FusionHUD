@@ -4,6 +4,10 @@
     {
         public DateTime Timestamp { get; init; }
 
+        public string CPUName { get; init; } = string.Empty;
+
+        public string GPUName { get; init; } = string.Empty;
+
         public string GameName { get; init; } = string.Empty;
 
         public double CpuUsage { get; init; }

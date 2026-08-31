@@ -7,6 +7,10 @@ namespace FusionHUD.Monitoring.Services
     {
         public string CreateReport(GameSessionStatistics Statistics)
         {
+            string CPUName = string.IsNullOrWhiteSpace(Statistics.CPUName) ? "CPU" : Statistics.CPUName;
+
+            string GPUName = FormatGPUName(Statistics.GPUName);
+
             string FpsAverage = Statistics.FpsAverage > 0 ? $"{Statistics.FpsAverage:F0} FPS" : "N/A";
 
             string CpuTemperatureAverage = Statistics.CpuTemperatureAverage > 0 ? $"{Statistics.CpuTemperatureAverage:F0}°C" : "N/A";
@@ -19,24 +23,24 @@ namespace FusionHUD.Monitoring.Services
 
             return $"""
                 🎮 <b>FusionHUD</b>
-                <i>Game Session Report</i>
+                <i>Game Session</i>
 
-                🎯 <b>Game: {Statistics.GameName}</b>
-                ⏱ <b>Session Duration: {FormatDuration(Statistics.Duration)}</b>
+                🎯 <b>{Statistics.GameName}</b>
+                ⏱ Duration: <b>{FormatDuration(Statistics.Duration)}</b>
 
                 ━━━━━━━━━━━━━━━━━━
                 📊 <b>PERFORMANCE</b>
 
                 🎯 <b>FPS</b>
-                Avg FPS: <b>{FpsAverage}</b>
+                Avg: <b>{FpsAverage}</b>
 
-                🖥 <b>CPU</b>
+                🖥 <b>{CPUName}</b>
                 Avg Usage: <b>{Statistics.CpuUsageAverage:F0}%</b>
                 Max Usage: {Statistics.CpuUsageMaximum:F0}%
                 Avg Temperature: <b>{CpuTemperatureAverage}</b>
                 Max Temperature: {CpuTemperatureMaximum}
 
-                🎮 <b>GPU</b>
+                🎮 <b>{GPUName}</b>
                 Avg Usage: <b>{Statistics.GpuUsageAverage:F0}%</b>
                 Max Usage: {Statistics.GpuUsageMaximum:F0}%
                 Avg Temperature: <b>{GpuTemperatureAverage}</b>
@@ -51,6 +55,26 @@ namespace FusionHUD.Monitoring.Services
                 """;
         }
 
+        private static string FormatGPUName(string Name)
+        {
+            if (string.IsNullOrWhiteSpace(Name))
+            {
+                return "GPU";
+            }
+
+            if (Name.StartsWith("NVIDIA ", StringComparison.OrdinalIgnoreCase))
+            {
+                Name = Name["NVIDIA ".Length..];
+            }
+
+            if (Name.StartsWith("GeForce ", StringComparison.OrdinalIgnoreCase))
+            {
+                Name = Name["GeForce ".Length..];
+            }
+
+            return Name;
+        }
+
         private static string FormatDuration(TimeSpan Duration)
         {
             if (Duration.TotalHours >= 1)
@@ -61,5 +85,4 @@ namespace FusionHUD.Monitoring.Services
             return $"{Duration.Minutes}m {Duration.Seconds}s";
         }
     }
-
 }

@@ -1,6 +1,4 @@
-﻿using FusionHUD.Monitoring.Models;
-
-namespace FusionHUD.Monitoring.Models
+﻿namespace FusionHUD.Monitoring.Models
 {
     public sealed class StatisticsState
     {
@@ -28,5 +26,4 @@ namespace FusionHUD.Monitoring.Models
         public double FpsTotal { get; set; }
         public int FpsSamples { get; set; }
     }
-
 }
