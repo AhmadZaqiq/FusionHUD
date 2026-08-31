@@ -17,5 +17,4 @@ namespace FusionHUD.Services
             _Window.Show();
         }
     }
-
 }

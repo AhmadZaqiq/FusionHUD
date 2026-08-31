@@ -1,6 +1,5 @@
 ﻿using FusionHUD.Interfaces;
 using Microsoft.Win32;
-using System.Reflection;
 
 namespace FusionHUD.Services
 {
@@ -12,7 +11,7 @@ namespace FusionHUD.Services
 
         public void EnableStartup()
         {
-            string ApplicationPath = Assembly.GetExecutingAssembly().Location;
+            string ApplicationPath = Environment.ProcessPath!;
 
             using RegistryKey? Key = Registry.CurrentUser.CreateSubKey(STARTUP_KEY);
 
@@ -33,5 +32,4 @@ namespace FusionHUD.Services
             return Key?.GetValue(STARTUP_NAME) is not null;
         }
     }
-
 }
