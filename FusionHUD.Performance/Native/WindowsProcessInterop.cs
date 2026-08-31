@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace FusionHUD.Performance.Native
 {
+    /// <summary>
+    /// Provides Windows API interop for retrieving the foreground process and its name.
+    /// </summary>
     internal static partial class WindowsProcessInterop
     {
         [LibraryImport("user32.dll")]
@@ -42,5 +45,4 @@ namespace FusionHUD.Performance.Native
             }
         }
     }
-
 }

@@ -6,5 +6,4 @@
 
         public long ChatId { get; set; }
     }
-
 }

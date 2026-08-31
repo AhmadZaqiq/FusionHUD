@@ -6,5 +6,4 @@
 
         public DailyStatistics Statistics { get; set; } = new();
     }
-
 }

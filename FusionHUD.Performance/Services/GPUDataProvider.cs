@@ -7,7 +7,7 @@ namespace FusionHUD.Performance.Providers
     [SupportedOSPlatform("windows")]
     public sealed class GPUDataProvider : IGPUDataProvider
     {
-        private const int SMOOTH_SAMPLES = 5;
+        private const int SMOOTH_SAMPLES = 5; // Number of recent samples used to smooth GPU performance readings.
 
         private readonly PhysicalGPU? _GraphicsCard;
 
@@ -111,6 +111,7 @@ namespace FusionHUD.Performance.Providers
             {
                 GPUMemoryInformation Memory =_GraphicsCard.MemoryInformation;
 
+                // NVAPI reports dedicated video memory values in KB; convert them to GB.
                 double TotalGB =Memory.DedicatedVideoMemoryInkB/ 1024.0/ 1024.0;
 
                 double AvailableGB =Memory.CurrentAvailableDedicatedVideoMemoryInkB/ 1024.0/ 1024.0;
@@ -155,5 +156,4 @@ namespace FusionHUD.Performance.Providers
             }
         }
     }
-
 }

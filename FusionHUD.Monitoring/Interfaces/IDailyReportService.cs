@@ -4,5 +4,4 @@
     {
         string CreateReport(Models.DailyStatistics Statistics);
     }
-
 }

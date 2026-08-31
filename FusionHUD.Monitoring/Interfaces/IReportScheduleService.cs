@@ -4,5 +4,4 @@
     {
         bool IsReportDue(DateTime CurrentTime, DateOnly? LastReportDate);
     }
-
 }

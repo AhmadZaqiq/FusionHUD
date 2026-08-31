@@ -29,5 +29,4 @@ namespace FusionHUD.Monitoring.Services
             return CurrentTime.TimeOfDay >= ReportTime;
         }
     }
-
 }

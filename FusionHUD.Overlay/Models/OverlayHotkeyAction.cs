@@ -7,5 +7,4 @@
         ChangeSize,
         ChangeColor
     }
-
 }

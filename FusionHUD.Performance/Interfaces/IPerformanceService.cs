@@ -6,5 +6,4 @@ namespace FusionHUD.Performance.Interfaces
     {
         PerformanceSnapshot GetPerformanceSnapshot();
     }
-
 }

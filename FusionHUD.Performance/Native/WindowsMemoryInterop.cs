@@ -2,6 +2,9 @@
 
 namespace FusionHUD.Performance.Native
 {
+    /// <summary>
+    /// Provides access to Windows memory status information through the native GlobalMemoryStatusEx API.
+    /// </summary>
     internal static partial class WindowsMemoryInterop
     {
         [LibraryImport("kernel32.dll", EntryPoint = "GlobalMemoryStatusEx", SetLastError = true)]
@@ -22,5 +25,4 @@ namespace FusionHUD.Performance.Native
             internal ulong ullAvailExtendedVirtual;
         }
     }
-
 }

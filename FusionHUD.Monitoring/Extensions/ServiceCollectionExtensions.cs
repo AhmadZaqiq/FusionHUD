@@ -12,6 +12,7 @@ namespace FusionHUD.Monitoring.Extensions
     {
         public static IServiceCollection AddMonitoringServices(this IServiceCollection Services, IConfiguration Configuration)
         {
+            // Use safe defaults when monitoring settings are missing from configuration.
             MonitoringOptions MonitoringOptions = new()
             {
                 SampleIntervalSeconds = Configuration.GetValue<int?>("Monitoring:SampleIntervalSeconds") ?? 5,
@@ -79,10 +80,9 @@ namespace FusionHUD.Monitoring.Extensions
 
             Services.Configure<TelegramOptions>(Configuration.GetSection("Telegram"));
 
-            Services.AddHostedService<Worker>();
+            Services.AddHostedService<Worker>(); // Run the monitoring worker as part of the application's hosted services.
 
             return Services;
         }
     }
-
 }

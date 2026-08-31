@@ -29,5 +29,4 @@
 
         public bool IsReportSent { get; set; }
     }
-
 }

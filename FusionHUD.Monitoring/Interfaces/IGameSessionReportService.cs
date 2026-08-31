@@ -6,5 +6,4 @@ namespace FusionHUD.Monitoring.Interfaces
     {
         string CreateReport(GameSessionStatistics Statistics);
     }
-
 }

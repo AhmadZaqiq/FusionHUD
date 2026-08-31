@@ -12,3 +12,5 @@ FusionHUD.MonitoringOLD/
 *.user
 *.userosscache
 *.sln.docstates
+
+[Rr]eleases/

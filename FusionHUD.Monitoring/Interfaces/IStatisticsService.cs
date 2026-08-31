@@ -20,5 +20,4 @@ namespace FusionHUD.Monitoring.Interfaces
 
         void MarkReportSent(DateOnly ReportDate);
     }
-
 }

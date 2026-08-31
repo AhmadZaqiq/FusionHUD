@@ -187,5 +187,4 @@ namespace FusionHUD.Monitoring.Services
             await _DailyStatisticsStore.SaveAsync(_StatisticsService.State, CancellationToken);
         }
     }
-
 }

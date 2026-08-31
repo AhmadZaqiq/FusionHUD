@@ -6,5 +6,4 @@ namespace FusionHUD.Monitoring.Interfaces
     {
         Task SendAsync(string Report, CancellationToken CancellationToken = default);
     }
-
 }

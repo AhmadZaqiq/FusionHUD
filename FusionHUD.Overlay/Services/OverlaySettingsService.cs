@@ -125,5 +125,4 @@ namespace FusionHUD.Overlay.Services
             }
         }
     }
-
 }

@@ -19,9 +19,8 @@ namespace FusionHUD.Performance.Services
             }
 
             ulong UsedMemory = MemoryStatus.ullTotalPhys - MemoryStatus.ullAvailPhys;
-
-            return UsedMemory / 1024.0 / 1024.0 / 1024.0;
+             
+            return UsedMemory / 1024.0 / 1024.0 / 1024.0; // Convert physical memory from bytes to gigabytes.
         }
     }
-
 }

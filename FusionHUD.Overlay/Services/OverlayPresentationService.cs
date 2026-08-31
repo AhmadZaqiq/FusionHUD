@@ -98,5 +98,4 @@ namespace FusionHUD.Overlay.Services
             ApplyAlignment(Window, Settings.Position);
         }
     }
-
 }

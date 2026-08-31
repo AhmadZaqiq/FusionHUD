@@ -26,5 +26,4 @@ namespace FusionHUD.Overlay.Extensions
             return Services;
         }
     }
-
 }

@@ -93,5 +93,4 @@ namespace FusionHUD.Overlay.ViewModels
                 $"RAM {RAMDisplay}";
         }
     }
-
 }

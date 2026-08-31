@@ -2,6 +2,9 @@
 
 namespace FusionHUD.Performance.Native
 {
+    /// <summary>
+    /// Provides the managed interop layer for the native FusionHUD.AMD library.
+    /// </summary>
     internal static partial class FusionHUDAMDInterop
     {
         private const string AMD_DLL = "FusionHUD.AMD.dll";
@@ -16,5 +19,4 @@ namespace FusionHUD.Performance.Native
         [LibraryImport(AMD_DLL, EntryPoint = "ShutdownAMDMonitor")]
         internal static partial void ShutdownAMDMonitor();
     }
-
 }

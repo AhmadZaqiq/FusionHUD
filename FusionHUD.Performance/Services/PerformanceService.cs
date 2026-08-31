@@ -46,5 +46,4 @@ namespace FusionHUD.Performance.Services
             };
         }
     }
-
 }

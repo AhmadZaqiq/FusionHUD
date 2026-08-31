@@ -6,5 +6,4 @@ namespace FusionHUD.Monitoring.Interfaces
     {
         PerformanceSample GetPerformanceSample();
     }
-
 }

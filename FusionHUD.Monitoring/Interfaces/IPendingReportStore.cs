@@ -10,5 +10,4 @@ namespace FusionHUD.Monitoring.Interfaces
 
         Task DeleteAsync(CancellationToken CancellationToken = default);
     }
-
 }

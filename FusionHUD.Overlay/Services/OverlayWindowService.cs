@@ -92,7 +92,7 @@ namespace FusionHUD.Overlay.Services
 
             if (_HwndSource is not null)
             {
-                _HwndSource.RemoveHook(HwndHook);
+                _HwndSource.RemoveHook(HwndHook); // Remove the Win32 message hook before releasing the HwndSource reference.
 
                 _HwndSource = null;
             }
@@ -117,7 +117,7 @@ namespace FusionHUD.Overlay.Services
                 return;
             }
 
-            WindowInteropHelper Helper = new(_Window);
+            WindowInteropHelper Helper = new(_Window); // The HWND is available after source initialization, allowing Win32 interop to be configured.
 
             _HwndSource = HwndSource.FromHwnd(Helper.Handle);
 
@@ -174,5 +174,4 @@ namespace FusionHUD.Overlay.Services
             }
         }
     }
-
 }

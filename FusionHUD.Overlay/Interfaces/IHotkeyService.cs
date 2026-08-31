@@ -10,5 +10,4 @@ namespace FusionHUD.Overlay.Interfaces
 
         OverlayHotkeyAction? GetHotkeyAction(int Message, IntPtr WParam);
     }
-
 }

@@ -62,5 +62,4 @@ namespace FusionHUD.Monitoring.Services
             }
         }
     }
-
 }

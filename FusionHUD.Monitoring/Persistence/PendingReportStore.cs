@@ -20,7 +20,7 @@ namespace FusionHUD.Monitoring.Persistence
         {
             _FilePath = FilePath;
 
-            _TemporaryFilePath = FilePath + ".tmp";
+            _TemporaryFilePath = FilePath + ".tmp"; // Write to a temporary file first so the existing report remains intact if persistence fails.
         }
 
         public async Task<PendingReport?> LoadAsync(CancellationToken CancellationToken = default)
@@ -92,5 +92,4 @@ namespace FusionHUD.Monitoring.Persistence
             return Task.CompletedTask;
         }
     }
-
 }

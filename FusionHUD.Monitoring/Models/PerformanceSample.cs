@@ -22,5 +22,4 @@
 
         public double Fps { get; init; }
     }
-
 }

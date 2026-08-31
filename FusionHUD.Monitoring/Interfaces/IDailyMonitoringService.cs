@@ -8,5 +8,4 @@
 
         Task ProcessDailyReportIfDueAsync(CancellationToken CancellationToken = default);
     }
-
 }

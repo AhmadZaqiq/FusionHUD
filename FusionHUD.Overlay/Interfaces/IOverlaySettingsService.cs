@@ -14,5 +14,4 @@ namespace FusionHUD.Overlay.Interfaces
         void MoveToNextSize();
         void MoveToNextColor();
     }
-
 }

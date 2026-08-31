@@ -11,15 +11,15 @@ namespace FusionHUD.Performance.Services
     {
         private const string SHARED_MEMORY_NAME = "RTSSSharedMemoryV2";
 
-        private const int FPS_OFFSET = 276;
+        private const int FPS_OFFSET = 276; // Offset of the FPS value within each RTSS application entry.
 
-        private const int SMOOTH_SAMPLES = 5;
+        private const int SMOOTH_SAMPLES = 5; // Number of recent samples used to smooth FPS readings.
 
-        private const int ENTRY_SIZE_OFFSET = 8;
+        private const int ENTRY_SIZE_OFFSET = 8; // Offset of the application entry size in the RTSS shared memory header.
 
-        private const int APPLICATION_OFFSET_OFFSET = 12;
+        private const int APPLICATION_OFFSET_OFFSET = 12; // Offset of the application entries in the RTSS shared memory header.
 
-        private const int APPLICATION_COUNT_OFFSET = 16;
+        private const int APPLICATION_COUNT_OFFSET = 16;// Offset of the application count in the RTSS shared memory header.
 
         private readonly Queue<float> _FPSHistory = new();
 
@@ -117,5 +117,4 @@ namespace FusionHUD.Performance.Services
             }
         }
     }
-
 }

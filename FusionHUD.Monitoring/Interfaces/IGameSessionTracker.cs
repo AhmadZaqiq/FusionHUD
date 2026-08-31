@@ -6,5 +6,4 @@ namespace FusionHUD.Monitoring.Interfaces
     {
         GameSessionStatistics? ProcessSample(PerformanceSample Sample);
     }
-
 }

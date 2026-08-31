@@ -15,5 +15,4 @@ namespace FusionHUD.Overlay
             WindowService.Initialize(this);
         }
     }
-
 }

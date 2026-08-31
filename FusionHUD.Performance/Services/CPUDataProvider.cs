@@ -5,10 +5,13 @@ using System.Runtime.Versioning;
 
 namespace FusionHUD.Performance.Services
 {
+    /// <summary>
+    /// Provides CPU utilization and temperature data for the system.
+    /// </summary>
     [SupportedOSPlatform("windows")]
     public sealed class CPUDataProvider : ICPUDataProvider, IDisposable
     {
-        private const int SMOOTH_SAMPLES = 5;
+        private const int SMOOTH_SAMPLES = 5; // Number of recent samples used to smooth performance readings.
 
         private readonly PerformanceCounter _CPUUsageCounter;
 
@@ -30,8 +33,7 @@ namespace FusionHUD.Performance.Services
 
             _CPUUsageCounter = new PerformanceCounter(categoryName: "Processor", counterName: "% Processor Time", instanceName: "_Total");
 
-            // The first reading is not meaningful for this counter.
-            _CPUUsageCounter.NextValue();
+            _CPUUsageCounter.NextValue(); // The first reading is not meaningful for this counter.
 
             _AMDInitialized = InitializeAMD();
         }
@@ -132,6 +134,9 @@ namespace FusionHUD.Performance.Services
             }
         }
 
+        /// <summary>
+        /// Adds a new sample to the history and returns the average of the retained samples.
+        /// </summary>
         private float AddAndAverage(Queue<float> History, float Value)
         {
             lock (_Lock)
@@ -184,5 +189,4 @@ namespace FusionHUD.Performance.Services
             GC.SuppressFinalize(this);
         }
     }
-
 }

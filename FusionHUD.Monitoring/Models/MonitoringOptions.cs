@@ -6,5 +6,4 @@
 
         public string ReportTime { get; set; } = "00:00";
     }
-
 }

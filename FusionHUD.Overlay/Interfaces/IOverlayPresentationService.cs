@@ -15,5 +15,4 @@ namespace FusionHUD.Overlay.Interfaces
 
         void ApplySettings(Window Window, OverlaySettings Settings);
     }
-
 }

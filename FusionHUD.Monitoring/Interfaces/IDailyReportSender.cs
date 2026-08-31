@@ -4,5 +4,4 @@
     {
         Task SendAsync(string Report, CancellationToken CancellationToken = default);
     }
-
 }

@@ -8,5 +8,4 @@
 
         float GetFPS();
     }
-
 }

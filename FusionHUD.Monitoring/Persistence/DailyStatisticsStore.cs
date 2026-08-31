@@ -20,11 +20,10 @@ namespace FusionHUD.Monitoring.Persistence
         {
             _FilePath = FilePath;
 
-            _TemporaryFilePath = FilePath + ".tmp";
+            _TemporaryFilePath = FilePath + ".tmp"; // Write to a temporary file first so the existing state remains intact if persistence fails.
         }
 
-        public async Task<StatisticsState?> LoadAsync(
-            CancellationToken CancellationToken = default)
+        public async Task<StatisticsState?> LoadAsync(CancellationToken CancellationToken = default)
         {
             if (!File.Exists(_FilePath))
             {
@@ -93,5 +92,4 @@ namespace FusionHUD.Monitoring.Persistence
             return Task.CompletedTask;
         }
     }
-
 }

@@ -6,8 +6,9 @@ namespace FusionHUD.Overlay.Services
 {
     public class HotkeyService : IHotkeyService
     {
-        private const int WM_HOTKEY = 0x0312;
+        private const int WM_HOTKEY = 0x0312; // Windows message identifier for registered hotkey notifications.
 
+        // Application-defined identifiers used to distinguish registered hotkeys.
         private const int TOGGLE_VISIBILITY_ID = 9000;
         private const int CHANGE_POSITION_ID = 9001;
         private const int CHANGE_SIZE_ID = 9002;
@@ -67,5 +68,4 @@ namespace FusionHUD.Overlay.Services
         [DllImport("user32.dll")]
         private static extern bool UnregisterHotKey(IntPtr HWnd, int ID);
     }
-
 }
