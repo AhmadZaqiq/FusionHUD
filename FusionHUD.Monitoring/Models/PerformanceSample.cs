@@ -4,6 +4,8 @@
     {
         public DateTime Timestamp { get; init; }
 
+        public string GameName { get; init; } = string.Empty;
+
         public double CpuUsage { get; init; }
 
         public double CpuTemperature { get; init; }

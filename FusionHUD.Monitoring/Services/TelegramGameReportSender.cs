@@ -7,15 +7,15 @@ using System.Text.Json;
 
 namespace FusionHUD.Monitoring.Services
 {
-    public sealed class TelegramReportSender : IDailyReportSender
+    public sealed class TelegramGameReportSender : IGameReportSender
     {
         private readonly HttpClient _HttpClient;
 
         private readonly TelegramOptions _TelegramOptions;
 
-        private readonly ILogger<TelegramReportSender> _Logger;
+        private readonly ILogger<TelegramGameReportSender> _Logger;
 
-        public TelegramReportSender(HttpClient HttpClient, IOptions<TelegramOptions> TelegramOptions, ILogger<TelegramReportSender> Logger)
+        public TelegramGameReportSender(HttpClient HttpClient, IOptions<TelegramOptions> TelegramOptions, ILogger<TelegramGameReportSender> Logger)
         {
             _HttpClient = HttpClient;
 
@@ -62,5 +62,4 @@ namespace FusionHUD.Monitoring.Services
             }
         }
     }
-
 }

@@ -73,8 +73,6 @@ namespace FusionHUD.Monitoring.Services
             UpdateGpuTemperature(Sample.GpuTemperature);
 
             UpdateRamUsage(Sample.RamUsage);
-
-            UpdateFps(Sample.Fps);
         }
 
         public void UpdateUptime()
@@ -122,8 +120,6 @@ namespace FusionHUD.Monitoring.Services
             Statistics.RamUsageAverage = State.Statistics.RamUsageAverage;
             Statistics.RamUsageMaximum = State.Statistics.RamUsageMaximum;
 
-            Statistics.FpsAverage = State.Statistics.FpsAverage;
-
             _SessionStartTime = DateTime.Now;
             Statistics.Uptime = TimeSpan.Zero;
         }
@@ -167,8 +163,6 @@ namespace FusionHUD.Monitoring.Services
 
             Statistics.RamUsageAverage = 0;
             Statistics.RamUsageMaximum = 0;
-
-            Statistics.FpsAverage = 0;
         }
 
         public void MarkReportSent(DateOnly ReportDate)
@@ -251,18 +245,6 @@ namespace FusionHUD.Monitoring.Services
             }
         }
 
-        private void UpdateFps(double Value)
-        {
-            if (Value <= 0)
-            {
-                return;
-            }
-
-            _FpsTotal += Value;
-            _FpsSamples++;
-
-            Statistics.FpsAverage = _FpsTotal / _FpsSamples;
-        }
     }
 
 }

@@ -1,4 +1,5 @@
 ﻿using FusionHUD.Performance.Interfaces;
+using FusionHUD.Performance.Models;
 using FusionHUD.Performance.Native;
 using System.IO.MemoryMappedFiles;
 using System.Runtime.Versioning;
@@ -24,7 +25,7 @@ namespace FusionHUD.Performance.Services
 
         private readonly object _Lock = new();
 
-        public float GetFPS()
+        public FPSData GetFPSData()
         {
             try
             {
@@ -34,7 +35,7 @@ namespace FusionHUD.Performance.Services
                 {
                     ClearFPSHistory();
 
-                    return 0;
+                    return new FPSData();
                 }
 
                 using MemoryMappedFile Memory = MemoryMappedFile.OpenExisting(SHARED_MEMORY_NAME);
@@ -51,7 +52,7 @@ namespace FusionHUD.Performance.Services
                 {
                     ClearFPSHistory();
 
-                    return 0;
+                    return new FPSData();
                 }
 
                 for (uint Index = 0; Index < ApplicationCount; Index++)
@@ -71,21 +72,25 @@ namespace FusionHUD.Performance.Services
                     {
                         ClearFPSHistory();
 
-                        return 0;
+                        return new FPSData();
                     }
 
-                    return AddFPSReading(FPS);
+                    return new FPSData
+                    {
+                        FPS = AddFPSReading(FPS),
+                        GameName = WindowsProcessInterop.GetProcessName(ForegroundProcessID)
+                    };
                 }
 
                 ClearFPSHistory();
 
-                return 0;
+                return new FPSData();
             }
             catch
             {
                 ClearFPSHistory();
 
-                return 0;
+                return new FPSData();
             }
         }
 

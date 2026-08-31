@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace FusionHUD.Performance.Native
 {
@@ -20,6 +21,25 @@ namespace FusionHUD.Performance.Native
             }
 
             return GetWindowThreadProcessId(WindowHandle, out uint ProcessID) == 0 ? 0 : ProcessID;
+        }
+
+        internal static string GetProcessName(uint ProcessID)
+        {
+            if (ProcessID == 0)
+            {
+                return string.Empty;
+            }
+
+            try
+            {
+                using Process Process = Process.GetProcessById((int)ProcessID);
+
+                return Process.ProcessName;
+            }
+            catch
+            {
+                return string.Empty;
+            }
         }
     }
 

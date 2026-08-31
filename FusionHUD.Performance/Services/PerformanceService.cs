@@ -13,8 +13,7 @@ namespace FusionHUD.Performance.Services
 
         private readonly IFPSDataProvider _FPSDataProvider;
 
-        public PerformanceService(ICPUDataProvider CPUDataProvider, IGPUDataProvider GPUDataProvider,
-                                  IRAMDataProvider RAMDataProvider, IFPSDataProvider FPSDataProvider)
+        public PerformanceService(ICPUDataProvider CPUDataProvider, IGPUDataProvider GPUDataProvider, IRAMDataProvider RAMDataProvider, IFPSDataProvider FPSDataProvider)
         {
             _CPUDataProvider = CPUDataProvider;
 
@@ -27,6 +26,8 @@ namespace FusionHUD.Performance.Services
 
         public PerformanceSnapshot GetPerformanceSnapshot()
         {
+            FPSData FPSData = _FPSDataProvider.GetFPSData();
+
             return new PerformanceSnapshot
             {
                 CPUName = _CPUDataProvider.CPUName,
@@ -40,7 +41,8 @@ namespace FusionHUD.Performance.Services
 
                 RAMUsage = _RAMDataProvider.GetRAMUsage(),
 
-                FPS = _FPSDataProvider.GetFPS()
+                FPS = FPSData.FPS,
+                GameName = FPSData.GameName
             };
         }
     }

@@ -21,6 +21,8 @@ namespace FusionHUD.Monitoring.Services
             {
                 Timestamp = DateTime.Now,
 
+                GameName = Snapshot.GameName,
+
                 CpuUsage = Snapshot.CPUUsage,
                 CpuTemperature = Snapshot.CPUTemperature,
 

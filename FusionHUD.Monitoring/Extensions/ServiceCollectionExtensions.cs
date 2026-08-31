@@ -38,37 +38,44 @@ namespace FusionHUD.Monitoring.Extensions
             Services.AddSingleton<IStatisticsService, StatisticsService>();
 
             Services.AddSingleton<IDailyStatisticsStore>(ServiceProvider =>
-                {
-                    string DataDirectory = Path.Combine(AppContext.BaseDirectory, "Data");
+            {
+                string DataDirectory = Path.Combine(AppContext.BaseDirectory, "Data");
 
-                    string FilePath = Path.Combine(DataDirectory, "daily-statistics.json");
+                string FilePath = Path.Combine(DataDirectory, "daily-statistics.json");
 
-                    return new DailyStatisticsStore(FilePath);
-                });
+                return new DailyStatisticsStore(FilePath);
+            });
 
-            Services.AddSingleton<IPendingReportStore>(
-                ServiceProvider =>
-                {
-                    string DataDirectory = Path.Combine(AppContext.BaseDirectory, "Data");
+            Services.AddSingleton<IPendingReportStore>(ServiceProvider =>
+            {
+                string DataDirectory = Path.Combine(AppContext.BaseDirectory, "Data");
 
-                    string FilePath = Path.Combine(DataDirectory, "pending-report.json");
+                string FilePath = Path.Combine(DataDirectory, "pending-report.json");
 
-                    return new PendingReportStore(FilePath);
-                });
+                return new PendingReportStore(FilePath);
+            });
 
             Services.AddSingleton<IDailyReportService, DailyReportService>();
 
-            Services.AddHttpClient<TelegramReportSender>(
+            Services.AddHttpClient<IDailyReportSender, TelegramReportSender>(
                 Client =>
                 {
                     Client.Timeout = TimeSpan.FromSeconds(15);
                 });
 
-            Services.AddSingleton<IDailyReportSender, TelegramReportSender>();
-
             Services.AddSingleton<IReportScheduleService, ReportScheduleService>();
 
             Services.AddSingleton<IDailyMonitoringService, DailyMonitoringService>();
+
+            Services.AddSingleton<IGameSessionTracker, GameSessionTracker>();
+
+            Services.AddSingleton<IGameSessionReportService, GameSessionReportService>();
+
+            Services.AddHttpClient<IGameReportSender, TelegramGameReportSender>(
+                Client =>
+                {
+                    Client.Timeout = TimeSpan.FromSeconds(15);
+                });
 
             Services.Configure<TelegramOptions>(Configuration.GetSection("Telegram"));
 

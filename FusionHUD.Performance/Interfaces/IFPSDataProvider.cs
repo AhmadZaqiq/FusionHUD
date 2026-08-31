@@ -1,7 +1,10 @@
-﻿namespace FusionHUD.Performance.Interfaces
+﻿using FusionHUD.Performance.Models;
+
+namespace FusionHUD.Performance.Interfaces
 {
     public interface IFPSDataProvider
     {
-        float GetFPS();
+        FPSData GetFPSData();
     }
+
 }

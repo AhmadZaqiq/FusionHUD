@@ -3,10 +3,12 @@ using FusionHUD.Monitoring.Models;
 
 namespace FusionHUD.Monitoring.Services
 {
-    public sealed class DailyReportService : IDailyReportService
+    public sealed class GameSessionReportService : IGameSessionReportService
     {
-        public string CreateReport(DailyStatistics Statistics)
+        public string CreateReport(GameSessionStatistics Statistics)
         {
+            string FpsAverage = Statistics.FpsAverage > 0 ? $"{Statistics.FpsAverage:F0} FPS" : "N/A";
+
             string CpuTemperatureAverage = Statistics.CpuTemperatureAverage > 0 ? $"{Statistics.CpuTemperatureAverage:F0}°C" : "N/A";
 
             string CpuTemperatureMaximum = Statistics.CpuTemperatureMaximum > 0 ? $"{Statistics.CpuTemperatureMaximum:F0}°C" : "N/A";
@@ -16,14 +18,17 @@ namespace FusionHUD.Monitoring.Services
             string GpuTemperatureMaximum = Statistics.GpuTemperatureMaximum > 0 ? $"{Statistics.GpuTemperatureMaximum:F0}°C" : "N/A";
 
             return $"""
-                📊 <b>FusionHUD</b>
-                <i>Daily Summary</i>
+                🎮 <b>FusionHUD</b>
+                <i>Game Session Report</i>
 
-                📅 <b>Date: {Statistics.StartTime:dd/MM/yyyy}</b>
-                ⏱ <b>System Uptime: {FormatUptime(Statistics.Uptime)}</b>
+                🎯 <b>Game: {Statistics.GameName}</b>
+                ⏱ <b>Session Duration: {FormatDuration(Statistics.Duration)}</b>
 
                 ━━━━━━━━━━━━━━━━━━
-                📊 <b>SYSTEM PERFORMANCE</b>
+                📊 <b>PERFORMANCE</b>
+
+                🎯 <b>FPS</b>
+                Avg FPS: <b>{FpsAverage}</b>
 
                 🖥 <b>CPU</b>
                 Avg Usage: <b>{Statistics.CpuUsageAverage:F0}%</b>
@@ -42,15 +47,18 @@ namespace FusionHUD.Monitoring.Services
                 Max Usage: {Statistics.RamUsageMaximum:F1} GB
                 ━━━━━━━━━━━━━━━━━━
 
-                ✅ <i>System monitoring completed successfully.</i>
+                ✅ <i>Session completed successfully.</i>
                 """;
         }
 
-        private static string FormatUptime(TimeSpan Uptime)
+        private static string FormatDuration(TimeSpan Duration)
         {
-            int TotalHours = (int)Uptime.TotalHours;
+            if (Duration.TotalHours >= 1)
+            {
+                return $"{(int)Duration.TotalHours}h {Duration.Minutes}m {Duration.Seconds}s";
+            }
 
-            return $"{TotalHours}h {Uptime.Minutes}m {Uptime.Seconds}s";
+            return $"{Duration.Minutes}m {Duration.Seconds}s";
         }
     }
 
