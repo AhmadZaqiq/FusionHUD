@@ -51,6 +51,26 @@ It is designed to remain visible above other applications while staying compact 
 
 ![FusionHUD overlay and Telegram reports](docs/images/fusionhud-overlay-telegram.png)
 
+### Overlay Customization
+
+FusionHUD provides simple built-in customization options without requiring complex configuration.
+
+The overlay supports:
+
+- **3 positions** — choose where the overlay appears on the screen.
+- **3 sizes** — select the display size that best fits the screen and use case.
+- **3 colors** — choose the preferred visual style for the overlay.
+
+These options allow the overlay to adapt to different screen layouts and personal preferences while keeping the interface simple and focused.
+
+### Automatic Operation
+
+FusionHUD is designed to handle the monitoring workflow automatically once the application is running.
+
+Performance data collection, processing, game-session detection, statistics tracking, and reporting are handled by the application without requiring continuous manual interaction.
+
+This keeps the experience focused on the information rather than configuration.
+
 ### Background Monitoring
 
 FusionHUD continuously collects performance samples while the application is running.
@@ -102,9 +122,9 @@ This separation makes the project easier to maintain and extend without requirin
 
 ## Designed to Grow
 
-The current implementation focuses on the core metrics needed for a practical performance overlay, but the architecture is designed to support additional performance data in the future.
+The current implementation focuses on the core metrics needed for a practical performance overlay, while the underlying architecture provides room for additional performance metrics and monitoring capabilities.
 
-Potential extensions include:
+Metrics that can be added as the project evolves include:
 
 - 1% Low FPS
 - 0.1% Low FPS
@@ -115,7 +135,7 @@ Potential extensions include:
 - Additional CPU and GPU metrics
 - More detailed game-session statistics
 
-These are potential extensions rather than features currently included in version 1.0.0.
+These capabilities are intentionally outside the current v1.0.0 feature set and can be introduced without redesigning the overall monitoring architecture.
 
 ## Technology
 
