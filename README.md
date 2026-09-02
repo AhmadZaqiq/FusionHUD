@@ -2,7 +2,7 @@
 
 A lightweight Windows performance overlay for real-time system and game monitoring.
 
-https://github.com/user-attachments/assets/197d55f6-fae8-432e-a2be-f7f13f4f2260
+![FusionHUD Overview](docs/images/fusionhud-overview.gif)
 
 ## Overview
 
