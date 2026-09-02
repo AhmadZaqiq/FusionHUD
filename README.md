@@ -2,7 +2,7 @@
 
 A lightweight Windows performance overlay for real-time system and game monitoring.
 
-<!-- Add the 10-second FusionHUD overview video here -->
+![](docs/images/fusionhud-overview.mp4)
 
 ## Overview
 
